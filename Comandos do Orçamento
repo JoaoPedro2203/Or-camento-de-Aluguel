@@ -1,0 +1,76 @@
+mkdir OrcamentoAluguel
+cd OrcamentoAluguel
+
+code orcamento.py
+
+import csv
+
+class Imovel:
+def init(self, tipo, quartos, garagem=0, criancas=True):
+self.tipo = tipo
+self.quartos = quartos
+self.garagem = garagem
+self.criancas = criancas
+
+def calcular_aluguel(self):
+    if self.tipo == "apartamento":
+        valor = 700
+        if self.quartos == 2:
+            valor += 200
+        if self.garagem:
+            valor += 300
+        if not self.criancas:
+            valor *= 0.95
+    elif self.tipo == "casa":
+        valor = 900
+        if self.quartos == 2:
+            valor += 250
+        if self.garagem:
+            valor += 300
+    elif self.tipo == "estudio":
+        valor = 1200
+        if self.garagem > 0:
+            valor += 250
+            if self.garagem > 2:
+                valor += (self.garagem - 2) * 60
+    else:
+        valor = 0
+    return valor
+class Contrato:
+def init(self, imovel):
+self.imovel = imovel
+self.valor_contrato = 2000
+
+def gerar_orcamento(self):
+    aluguel = self.imovel.calcular_aluguel()
+    print(f"\n--- ORÇAMENTO GERADO ---")
+    print(f"Tipo do imóvel: {self.imovel.tipo.capitalize()}")
+    print(f"Quartos: {self.imovel.quartos}")
+    print(f"Garagem/Vagas: {self.imovel.garagem}")
+    print(f"Possui crianças: {'Sim' if self.imovel.criancas else 'Não'}")
+    print(f"Valor do aluguel: R$ {aluguel:.2f}")
+    print(f"Contrato (até 5x): R$ {self.valor_contrato:.2f}")
+
+    # gera o CSV das parcelas
+    parcelas = [aluguel for _ in range(12)]
+    with open("orcamento.csv", "w", newline="") as arquivo:
+        writer = csv.writer(arquivo)
+        writer.writerow(["Mês", "Valor"])
+        for i, valor in enumerate(parcelas, start=1):
+            writer.writerow([f"Mês {i}", f"R$ {valor:.2f}"])
+    print("\nArquivo 'orcamento.csv' gerado com sucesso!")
+Entrada de dados via terminal
+print("=== Sistema de Orçamento de Aluguel ===")
+tipo = input("Tipo de imóvel (apartamento / casa / estudio): ").lower()
+quartos = int(input("Quantidade de quartos (1 ou 2): "))
+
+if tipo == "estudio":
+garagem = int(input("Número de vagas de estacionamento: "))
+else:
+garagem = int(input("Deseja garagem? (0 = não, 1 = sim): "))
+
+criancas = input("Possui crianças? (s/n): ").lower() == 's'
+
+imovel = Imovel(tipo, quartos, garagem, criancas)
+contrato = Contrato(imovel)
+contrato.gerar_orcamento()
